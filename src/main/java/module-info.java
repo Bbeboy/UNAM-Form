@@ -4,6 +4,12 @@ module fes.aragon.formulario {
 
     requires org.kordamp.bootstrapfx.core;
 
-    opens fes.aragon.formulario to javafx.fxml;
-    exports fes.aragon.formulario;
+    exports fes.aragon.inicio;
+    opens fes.aragon.inicio to javafx.fxml;
+    exports fes.aragon.controller;
+    opens fes.aragon.controller to javafx.fxml;
+    exports fes.aragon.modelo;
+    opens fes.aragon.modelo to javafx.fxml;
+
+
 }
