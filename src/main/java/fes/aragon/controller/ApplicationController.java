@@ -1,5 +1,6 @@
 package fes.aragon.controller;
 
+import fes.aragon.conexion.Conexion;
 import fes.aragon.modelo.*;
 
 import javafx.beans.value.ObservableValue;
@@ -9,6 +10,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class ApplicationController extends BaseController implements Initializable {
@@ -144,14 +147,15 @@ public class ApplicationController extends BaseController implements Initializab
 
     @FXML
     void accionVerificar(ActionEvent event) {
-        if(this.verificar() && verificacion) {
+        /*if(this.verificar() && verificacion) {
 
             System.out.println("Valido");
         }else {
             this.mensajes+="Ningun campo debe estar en rojo";
             this.ventanaEmergente("Datos no validos", "Por favor valida la información,", mensajes);
             this.mensajes="";
-        }
+        }*/
+        this.almacenar(); //Conexion a la BD
     }
     @SuppressWarnings("unused")
     @Override
@@ -193,6 +197,48 @@ public class ApplicationController extends BaseController implements Initializab
         }
 
         return valido;
+    }
+
+    private Cliente almacenar(){
+        Conexion con= null;
+        try {
+            con = new Conexion();
+            Cliente cl= Cliente.builder()
+                    .folio(txtNumFolio.getText())
+                    .cliente("2345")
+                    .fecha_solicitud(new Date())
+                    .montoSolicitado(23.4)
+                    .cuentaCliente(12334)
+                    .plazo(2)
+                    .nombre("Rosa")
+                    .apellidoPaterno("Lopez")
+                    .apellidoMaterno("lopez")
+                    .fechaNacimiento(new Date())
+                    .estadoNacimiento("Puebla")
+                    .nacionalidad("Mexicana")
+                    .sexo(false)
+                    .regimen_fiscal(false)
+                    .rfc("1234567891234")
+                    .curp("123456789123423456")
+                    .gradoEstudio(1)
+                    .correo("demo@demo.com")
+                    .telefono("1234567891")
+                    .tipoPropiedad(1)
+                    .domicilio("Bueno")
+                    .colMunDem("Demo")
+                    .ciudad("Estado")
+                    .estado("Puebla")
+                    .cp("34321")
+                    .recidenciaAnos(2)
+                    .build();
+            con.insertar(cl);
+            con.cerrarConexion();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 }
 

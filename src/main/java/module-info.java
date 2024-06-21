@@ -3,6 +3,9 @@ module fes.aragon.formulario {
     requires javafx.fxml;
 
     requires org.kordamp.bootstrapfx.core;
+    requires static lombok;
+    requires org.mariadb.jdbc;
+    requires org.checkerframework.checker.qual;
 
     exports fes.aragon.inicio;
     opens fes.aragon.inicio to javafx.fxml;
