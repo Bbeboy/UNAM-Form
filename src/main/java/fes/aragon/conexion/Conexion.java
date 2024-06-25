@@ -4,7 +4,7 @@ import fes.aragon.modelo.Cliente;
 import java.sql.*;
 
 public class Conexion {
-    private String url="jdbc:mariadb://localhost:3306/javafx?useSSL=false&serverTimezone=UTC";
+    private String url=""; //Agregar la url para la conectar la DB
     private String usuario="root";
     private String clave=""; //Agregar la clave para ingresar a la DB
     private Connection cnn=null;

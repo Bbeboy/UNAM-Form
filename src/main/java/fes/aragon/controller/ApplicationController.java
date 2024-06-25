@@ -11,6 +11,9 @@ import javafx.scene.control.*;
 
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.IsoChronology;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -140,22 +143,21 @@ public class ApplicationController extends BaseController implements Initializab
     private TextField txtRFX;
 
     @FXML
-    private TextField txtTelefonoCasa;
+    private TextField txtCorreo;
 
     @FXML
     private TextField txtTelefonoCelular;
 
     @FXML
     void accionVerificar(ActionEvent event) {
-        /*if(this.verificar() && verificacion) {
-
+        if(this.verificar() && verificacion) {
             System.out.println("Valido");
+            this.almacenar(); //Conexion a la BD
         }else {
             this.mensajes+="Ningun campo debe estar en rojo";
             this.ventanaEmergente("Datos no validos", "Por favor valida la información,", mensajes);
             this.mensajes="";
-        }*/
-        this.almacenar(); //Conexion a la BD
+        }
     }
     @SuppressWarnings("unused")
     @Override
@@ -166,10 +168,80 @@ public class ApplicationController extends BaseController implements Initializab
         this.cbbGradoEstudios.getItems().addAll("Primaria", "Secundaria", "Nivel Medio Superior", "Nivel Superior");
         this.cbbEstado.getItems().addAll("Aguascalientes", "Baja California", "Baja California Sur",
                 "Campeche", "Coahuila");
-// verificando cada campo
+
+        // verificando longitud de cada campo
+        txtNumFolio.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 9 ? c : null;}));
+        txtNumTrabajador.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 7 ? c : null;}));
+        txtNumCliente.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 6 ? c : null;}));
+        txtMontoSolicitar.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 6 ? c : null;}));
+        txtNombre.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 31 ? c : null;}));
+        txtApellidoMaterno.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 31 ? c : null;}));
+        txtApellidoPaterno.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 31 ? c : null;}));
+        txtRFX.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 14 ? c : null;}));
+        txtCURP.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 18 ? c : null;}));
+        txtCorreo.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 71 ? c : null;}));
+        txtTelefonoCelular.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 11 ? c : null;}));
+        txtDomicilio.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 121 ? c : null;}));
+        txtColMunDem.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 41 ? c : null;}));
+        txtCiudad.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 61 ? c : null;}));
+        txtCP.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 6 ? c : null;}));
+        txtAnosResidencia.setTextFormatter(new TextFormatter<>(c ->  {return c.getControlNewText().length() < 3 ? c : null;}));
+
+        //Verificando campos
         this.verificarEntrada(txtNumFolio, TipoError.FOLIO);
-//Un detector de cambios para rastrear la selección en el grupo
+        this.verificarEntrada(txtNumTrabajador, TipoError.TRABAJADOR);
+        //this.verificarEntrada(dtpFechaSolicitud, TipoError.FOLIO);
+        this.verificarEntrada(txtMontoSolicitar, TipoError.MONTO);
+        this.verificarEntrada(txtNumCliente, TipoError.CLIENTE);
+        this.verificarEntrada(txtNombre, TipoError.NOMBRE);
+        this.verificarEntrada(txtApellidoPaterno, TipoError.APELLIDO);
+        this.verificarEntrada(txtApellidoMaterno, TipoError.APELLIDOMATERNO);
+        this.verificarEntrada(txtRFX, TipoError.RFC);
+        this.verificarEntrada(txtCURP, TipoError.CURP);
+        this.verificarEntrada(txtCorreo, TipoError.CORREO);
+        this.verificarEntrada(txtTelefonoCelular, TipoError.TELEFONO);
+        this.verificarEntrada(txtDomicilio, TipoError.DOMICILIO);
+        this.verificarEntrada(txtColMunDem, TipoError.COLMUNDEM);
+        this.verificarEntrada(txtCP, TipoError.CP);
+        this.verificarEntrada(txtCiudad, TipoError.CIUDAD);
+        this.verificarEntrada(txtAnosResidencia, TipoError.ANOSRESIDENCIA);
+
+        //Un detector de cambios para rastrear la selección en el grupo
         this.grupoSexo.selectedToggleProperty().addListener((ObservableValue<? extends Toggle>
+                                                                     observable,
+                                                             Toggle oldBtn,
+                                                             Toggle newBtn)->{
+            String etiqueta="";
+            if(newBtn!=null) {
+                etiqueta=((Labeled)newBtn).getText();
+                System.out.println(etiqueta);
+            }
+        });
+        this.regimen.selectedToggleProperty().addListener((ObservableValue<? extends Toggle>
+
+                                                                   observable,
+                                                           Toggle oldBtn,
+                                                           Toggle newBtn)->{
+            String etiqueta="";
+            if(newBtn!=null) {
+                etiqueta=((Labeled)newBtn).getText();
+                System.out.println(etiqueta);
+            }
+        });
+
+        this.estadoCivil.selectedToggleProperty().addListener((ObservableValue<? extends Toggle>
+
+                                                                       observable,
+                                                               Toggle oldBtn,
+                                                               Toggle newBtn)->{
+            String etiqueta="";
+            if(newBtn!=null) {
+                etiqueta=((Labeled)newBtn).getText();
+                System.out.println(etiqueta);
+            }
+        });
+
+        this.propiedad.selectedToggleProperty().addListener((ObservableValue<? extends Toggle>
 
                                                                      observable,
                                                              Toggle oldBtn,
@@ -183,6 +255,18 @@ public class ApplicationController extends BaseController implements Initializab
     }
     private boolean verificar() {
         boolean valido = true;
+        LocalDate dateNow = LocalDate.now();
+        if (this.dtpFechaNacimiento.getValue() == null ||
+                (this.dtpFechaNacimiento.getValue().until(IsoChronology.INSTANCE.dateNow()).getYears() < 18) ||
+                (this.dtpFechaNacimiento.getValue().until(IsoChronology.INSTANCE.dateNow()).getYears() > 100)) {
+            valido = false;
+            this.mensajes+="Edad minima 18 años y maxima 99\n";
+        }
+        if ((this.dtpFechaSolicitud.getValue() != null && !dtpFechaSolicitud.getValue().equals(dateNow)) ||
+                (this.dtpFechaSolicitud.getValue() == null)){
+            valido = false;
+            this.mensajes+="El dia debe ser el actual\n";
+        }
         if (this.txtNumFolio.getText() == null || this.txtNumFolio.getText().trim().isEmpty()) {
             valido = false;
             this.mensajes+="Número de folio no valido\n";
@@ -191,9 +275,39 @@ public class ApplicationController extends BaseController implements Initializab
             valido = false;
             this.mensajes+="Seleccione un plazo\n";
         }
+        if(this.cbbEstado.getSelectionModel().getSelectedIndex()==-1) {
+            valido = false;
+            this.mensajes+="Seleccione un Estado\n";
+        }
+        if(this.cbbGradoEstudios.getSelectionModel().getSelectedIndex()==-1) {
+            valido = false;
+            this.mensajes+="Seleccione un grado de estudios\n";
+        }
+        if(this.cbbNacionalidad.getSelectionModel().getSelectedIndex()==-1) {
+            valido = false;
+            this.mensajes+="Seleccione una nacionalidad\n";
+        }
+        if(this.cbbPaisNacimiento.getSelectionModel().getSelectedIndex()==-1) {
+            valido = false;
+            this.mensajes+="Seleccione un pais de nacimiento\n";
+        }
         if(!this.rdbFemenino.isSelected() && !this.rdbMasculino.isSelected()) {
             valido = false;
             this.mensajes+="Seleccione un sexo\n";
+        }
+        if(!this.rdbAsalariado.isSelected() && !this.rdbHonorarios.isSelected()) {
+            valido = false;
+            this.mensajes+="Seleccione un regimen\n";
+        }
+        if (!this.rdbSoltero.isSelected() && !this.rdbCasado.isSelected() && !this.rdbUnionLibre.isSelected() &&
+                !this.rdbDivorciado.isSelected() && !this.rdbSociedadConyugal.isSelected() && !this.rdbSeparacionBienes.isSelected()) {
+            valido = false;
+            this.mensajes+="Selecciona tu Estado Civil\n";
+        }
+        if (!this.rdbPropia.isSelected() && !this.rdbRentada.isSelected() && !this.rdbHipotecada.isSelected()
+                && !this.rdbHipotecada.isSelected()){
+            valido = false;
+            this.mensajes+="No has seleccionado tu tipo de vivienda\n";
         }
 
         return valido;
@@ -201,35 +315,36 @@ public class ApplicationController extends BaseController implements Initializab
 
     private Cliente almacenar(){
         Conexion con= null;
+        Cliente cl=null;
         try {
             con = new Conexion();
-            Cliente cl= Cliente.builder()
+            cl= Cliente.builder()
                     .folio(txtNumFolio.getText())
-                    .cliente("2345")
+                    .cliente(txtNumTrabajador.getText())
                     .fecha_solicitud(new Date())
-                    .montoSolicitado(23.4)
-                    .cuentaCliente(12334)
-                    .plazo(2)
-                    .nombre("Rosa")
-                    .apellidoPaterno("Lopez")
-                    .apellidoMaterno("lopez")
+                    .montoSolicitado(Double.parseDouble(txtMontoSolicitar.getText()))
+                    .cuentaCliente(Integer.parseInt(txtNumCliente.getText()))
+                    .plazo(cbbPlazoMeses.getValue())
+                    .nombre(txtNombre.getText())
+                    .apellidoPaterno(txtApellidoPaterno.getText())
+                    .apellidoMaterno(txtApellidoMaterno.getText())
                     .fechaNacimiento(new Date())
-                    .estadoNacimiento("Puebla")
-                    .nacionalidad("Mexicana")
+                    .estadoNacimiento(cbbPaisNacimiento.getValue())
+                    .nacionalidad(cbbNacionalidad.getValue())
                     .sexo(false)
                     .regimen_fiscal(false)
-                    .rfc("1234567891234")
-                    .curp("123456789123423456")
-                    .gradoEstudio(1)
-                    .correo("demo@demo.com")
-                    .telefono("1234567891")
-                    .tipoPropiedad(1)
-                    .domicilio("Bueno")
-                    .colMunDem("Demo")
-                    .ciudad("Estado")
-                    .estado("Puebla")
-                    .cp("34321")
-                    .recidenciaAnos(2)
+                    .rfc(txtRFX.getText())
+                    .curp(txtCURP.getText())
+                    .gradoEstudio(cbbGradoEstudios.getSelectionModel().getSelectedIndex())
+                    .correo(txtCorreo.getText())
+                    .telefono(txtTelefonoCelular.getText())
+                    .tipoPropiedad(Integer.parseInt(propiedad.getSelectedToggle().toString()))
+                    .domicilio(txtDomicilio.getText())
+                    .colMunDem(txtColMunDem.getText())
+                    .ciudad(txtCiudad.getText())
+                    .estado(cbbEstado.getSelectionModel().toString())
+                    .cp(txtCP.getText())
+                    .recidenciaAnos(Integer.parseInt(txtAnosResidencia.getText()))
                     .build();
             con.insertar(cl);
             con.cerrarConexion();
@@ -238,7 +353,7 @@ public class ApplicationController extends BaseController implements Initializab
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return cl;
     }
 }
 
